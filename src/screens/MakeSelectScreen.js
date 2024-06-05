@@ -40,8 +40,6 @@ const MakeSelectScreen = () => {
                         item={item.Make}
                         curPage='Make'
                         nextPage='Model'
-                        selectedYear={selectedYear}
-                        selectedMake={selectedMake}
                     />
                 )}
             />

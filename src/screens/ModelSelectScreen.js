@@ -12,7 +12,6 @@ const ModelSelectScreen = () => {
         fetchApiData,
         selectedYear,
         selectedMake,
-        selectedModel,
         apiModel,
         setApiModel,
         modalVisible,
@@ -51,8 +50,6 @@ const ModelSelectScreen = () => {
                         item={item.Model}
                         curPage='Model'
                         nextPage='Modal'
-                        selectedYear={selectedYear}
-                        selectedModel={selectedModel}
                     />
                 )}
             />

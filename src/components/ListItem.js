@@ -2,13 +2,13 @@ import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AppContext from '../context/AppContext';
 
-const ListItem = ({ item, curPage, nextPage }) => {
+const ListItem = ({ item, index, curPage, nextPage }) => {
     const { handleSelectListItem } = useContext(AppContext);
 
     return (
         <View>
             <TouchableOpacity onPress={() => handleSelectListItem(item, curPage, nextPage)}>
-                <View style={styles.listItem}>
+                <View style={styles.listItem }>
                     <Text style={item?.length <= 3 ? styles.listItemShort : styles.listItemText}>{item}</Text>
                 </View>
             </TouchableOpacity>

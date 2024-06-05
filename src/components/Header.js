@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -23,7 +23,9 @@ const Header = () => {
             <View style={styles.headerContentWrap}>
                 <View style={{ justifyContent: 'center', position: 'relative' }}>
                     <Text style={styles.headerMainTitle}>{headerMainTitle}</Text>
-                    <Text style={headerSubtitle?.length <= 8 ? styles.headerSubtitleShort : styles.headerSubtitle}>{headerSubtitle}</Text>
+                    <Text style={headerSubtitle?.length <= 8 ? styles.headerSubtitleShort : styles.headerSubtitle}>
+                        {headerSubtitle}
+                    </Text>
                 </View>
                 <Pressable onPress={handleGoBack} style={styles.resetButton}>
                     <FontAwesome5 name='undo' size={18} color='#d97e1e' />
