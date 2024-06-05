@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../context/AppContext.js';
 import ListItem from '../components/ListItem.js';

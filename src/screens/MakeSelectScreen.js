@@ -6,7 +6,7 @@ import ListItem from '../components/ListItem';
 const MakeSelectScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { fetchApiData, apiMakes, setApiMakes, selectedYear, selectedMake } = useContext(AppContext);
+    const { fetchApiData, apiMakes, setApiMakes, selectedYear } = useContext(AppContext);
 
     useEffect(() => {
         const fetchMakes = async () => {

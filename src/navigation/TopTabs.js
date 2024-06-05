@@ -4,14 +4,12 @@ import MakeSelectScreen from '../screens/MakeSelectScreen';
 import ModelSelectScreen from '../screens/ModelSelectScreen';
 import EngineSelectScreen from '../screens/EngineSelectScreen';
 import Header from '../components/Header';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useContext } from 'react';
 import AppContext from '../context/AppContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 function TopTabs() {
-    const insets = useSafeAreaInsets();
     const { selectedYear, selectedModel, selectedMake } = useContext(AppContext);
 
     return (
