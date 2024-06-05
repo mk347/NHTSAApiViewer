@@ -30,7 +30,7 @@ const ModelSelectScreen = () => {
             }
             setIsLoading(false);
         };
-        fetchModels(selectedYear, selectedMake);
+        fetchModels();
     }, [selectedMake, selectedYear]);
 
     if (isLoading) {

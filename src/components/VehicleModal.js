@@ -32,7 +32,7 @@ const VehicleModal = () => {
             }
             setIsLoading(false);
         };
-        fetchVehicle(selectedYear, selectedMake, selectedModel);
+        fetchVehicle();
     }, [selectedYear, selectedMake, selectedModel]);
 
     if (isLoading) {
@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
     vehicleListItem: {
+        justifyContent: 'center',
+        alignItems: 'center',
         // padding: 10,
         fontSize: 16,
         // borderBottomColor: '#f0f0f0',

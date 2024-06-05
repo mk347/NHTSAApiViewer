@@ -20,7 +20,7 @@ const MakeSelectScreen = () => {
             }
             setIsLoading(false);
         };
-        fetchMakes(selectedYear);
+        fetchMakes();
     }, [selectedYear]);
 
     if (isLoading) {
