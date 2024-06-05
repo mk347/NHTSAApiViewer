@@ -25,6 +25,27 @@ export const AppContextProvider = ({ children }) => {
         vehicle: `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}/make/${selectedMake}/model/${selectedModel}?format=json`,
     };
 
+    const fetchApiData = async (selectedYear, selectedMake, selectedModel) => {
+        let url = apiUrl.years;
+
+        if (selectedYear && !selectedMake && !selectedModel) {
+            url = apiUrl.makes;
+        } else if (selectedYear && selectedMake && !selectedModel) {
+            url = apiUrl.models;
+        } else if (selectedYear && selectedMake && selectedModel) {
+            url = apiUrl.vehicle;
+        }
+
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const json = await res.json();
+        return json.Results;
+    };
+
     const handleSelectListItem = (item, curPage, nextPage) => {
         if (curPage === 'Year') {
             console.log('testing', item);
@@ -54,27 +75,6 @@ export const AppContextProvider = ({ children }) => {
         } else if (selectedYear && selectedMake && selectedModel) {
             setHeaderSubtitle('fin');
         }
-    };
-
-    const fetchApiData = async (selectedYear, selectedMake, selectedModel) => {
-        let url = apiUrl.years;
-
-        if (selectedYear && !selectedMake && !selectedModel) {
-            url = apiUrl.makes;
-        } else if (selectedYear && selectedMake && !selectedModel) {
-            url = apiUrl.models;
-        } else if (selectedYear && selectedMake && selectedModel) {
-            url = apiUrl.vehicle;
-        }
-
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-
-        const json = await res.json();
-        return json.Results;
     };
 
     return (
