@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useState } from 'react';
 
 const AppContext = createContext({});
@@ -15,6 +16,8 @@ export const AppContextProvider = ({ children }) => {
     const [headerMainTitle, setHeaderMainTitle] = useState('Choose Year');
     const [headerSubtitle, setHeaderSubtitle] = useState(' ');
 
+    const navigation = useNavigation();
+
     const apiUrl = {
         years: 'https://api.nhtsa.gov/SafetyRatings/?format=json',
         makes: `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}?format=json`,
@@ -22,12 +25,27 @@ export const AppContextProvider = ({ children }) => {
         vehicle: `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}/make/${selectedMake}/model/${selectedModel}?format=json`,
     };
 
+    const handleSelectListItem = (item, curPage, nextPage) => {
+        if (curPage === 'Year') {
+            console.log('testing', item);
+            navigation.navigate(nextPage);
+            setSelectedYear(item);
+            updateTextHeader(item);
+        } else if (curPage === 'Make') {
+            navigation.navigate(nextPage);
+            setSelectedMake(item);
+            updateTextHeader(selectedYear, item);
+        } else if (curPage === 'Model') {
+            setSelectedModel(item);
+            setModalVisible(true);
+        }
+    };
+
     const updateTextHeader = (selectedYear, selectedMake, selectedModel) => {
         if (!selectedYear && !selectedMake && !selectedModel) {
             setHeaderMainTitle('Choose Make');
             setHeaderSubtitle(selectedYear);
-        }
-        else if (selectedYear && !selectedMake && !selectedModel) {
+        } else if (selectedYear && !selectedMake && !selectedModel) {
             setHeaderMainTitle('Choose Make');
             setHeaderSubtitle(selectedYear);
         } else if (selectedYear && selectedMake && !selectedModel) {
@@ -36,7 +54,7 @@ export const AppContextProvider = ({ children }) => {
         } else if (selectedYear && selectedMake && selectedModel) {
             setHeaderSubtitle('fin');
         }
-    }
+    };
 
     const fetchApiData = async (selectedYear, selectedMake, selectedModel) => {
         let url = apiUrl.years;
@@ -86,6 +104,7 @@ export const AppContextProvider = ({ children }) => {
                 headerSubtitle,
                 setHeaderSubtitle,
                 updateTextHeader,
+                handleSelectListItem,
             }}
         >
             {children}

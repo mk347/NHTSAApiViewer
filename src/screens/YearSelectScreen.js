@@ -1,17 +1,12 @@
 import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../context/AppContext.js';
+import ListItem from '../components/ListItem.js';
 
-const YearSelectScreen = ({ route, navigation }) => {
+const YearSelectScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { fetchApiData, apiYears, setApiYears, selectedYear, setSelectedYear, setHeaderMainTitle, updateTextHeader } = useContext(AppContext);
-
-    const handleSelectYear = (item) => {
-        navigation.navigate('Make');
-        setSelectedYear(item.ModelYear);
-        updateTextHeader(item.ModelYear);
-    };
+    const { fetchApiData, apiYears, setApiYears } = useContext(AppContext);
 
     useEffect(() => {
         const fetchYears = async () => {
@@ -43,11 +38,7 @@ const YearSelectScreen = ({ route, navigation }) => {
                 renderItem={({ item }) => (
                     <>
                         {item.ModelYear >= 1995 && item.ModelYear <= 2024 && (
-                            <TouchableOpacity onPress={() => handleSelectYear(item)}>
-                                <View style={styles.yearItem}>
-                                    <Text>{item.ModelYear}</Text>
-                                </View>
-                            </TouchableOpacity>
+                            <ListItem item={item.ModelYear} curPage='Year' nextPage='Make' />
                         )}
                     </>
                 )}
@@ -63,12 +54,5 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
-    },
-    yearItem: {
-        padding: 10,
-        fontSize: 16,
-        borderBottomColor: '#f0f0f0',
-        borderBottomWidth: 1,
-        width: '100%',
     },
 });
