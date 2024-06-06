@@ -10,7 +10,7 @@ const VehicleModal = () => {
     const [error, setError] = useState(null);
 
     const {
-        fetchApiData,
+        fetchApiVehicle,
         selectedYear,
         selectedMake,
         selectedModel,
@@ -25,7 +25,7 @@ const VehicleModal = () => {
             setIsLoading(true);
 
             try {
-                const apiVehicle = await fetchApiData(selectedYear, selectedMake, selectedModel);
+                const apiVehicle = await fetchApiVehicle();
                 setApiVehicle(apiVehicle);
             } catch (error) {
                 setError(error.message);
@@ -93,10 +93,7 @@ const styles = StyleSheet.create({
     vehicleListItem: {
         justifyContent: 'center',
         alignItems: 'center',
-        // padding: 10,
         fontSize: 16,
-        // borderBottomColor: '#f0f0f0',
-        // borderBottomWidth: 1,
         width: '100%',
     },
 });

@@ -15,27 +15,51 @@ export const AppContextProvider = ({ children }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [headerMainTitle, setHeaderMainTitle] = useState('Choose Year');
     const [headerSubtitle, setHeaderSubtitle] = useState(' ');
+    const [apiItem, setApiItem] = useState('Test');
 
     const navigation = useNavigation();
 
-    const apiUrl = {
-        years: 'https://api.nhtsa.gov/SafetyRatings/?format=json',
-        makes: `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}?format=json`,
-        models: `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}/make/${selectedMake}/?format=json`,
-        vehicle: `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}/make/${selectedMake}/model/${selectedModel}?format=json`,
-    };
+    const baseUrl = 'https://api.nhtsa.gov/SafetyRatings/'; 
+    const formatUrl = '?format=json'; 
 
-    const fetchApiData = async (selectedYear, selectedMake, selectedModel) => {
-        let url = apiUrl.years;
+    const fetchApiYears = async () => { 
+        const url = `${baseUrl}${formatUrl}`
+        const res = await fetch(url);
 
-        if (selectedYear && !selectedMake && !selectedModel) {
-            url = apiUrl.makes;
-        } else if (selectedYear && selectedMake && !selectedModel) {
-            url = apiUrl.models;
-        } else if (selectedYear && selectedMake && selectedModel) {
-            url = apiUrl.vehicle;
+        if (!res.ok) {
+            throw new Error('Failed to fetch data');
         }
 
+        const json = await res.json();
+        return json.Results;
+    };
+
+    const fetchApiMakes = async () => { 
+        const url = `${baseUrl}/modelyear/${selectedYear}/${formatUrl}`;
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const json = await res.json();
+        return json.Results;
+    };
+
+    const fetchApiModels = async () => { 
+        const url = `${baseUrl}/modelyear/${selectedYear}/make/${selectedMake}/${formatUrl}`;
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const json = await res.json();
+        return json.Results;
+    };
+
+    const fetchApiVehicle = async () => { 
+        const url = `${baseUrl}/modelyear/${selectedYear}/make/${selectedMake}/model/${selectedModel}/${formatUrl}`;
         const res = await fetch(url);
 
         if (!res.ok) {
@@ -48,7 +72,6 @@ export const AppContextProvider = ({ children }) => {
 
     const handleSelectListItem = (item, curPage, nextPage) => {
         if (curPage === 'Year') {
-            console.log('testing', item);
             navigation.navigate(nextPage);
             setSelectedYear(item);
             updateTextHeader(item);
@@ -64,8 +87,8 @@ export const AppContextProvider = ({ children }) => {
 
     const updateTextHeader = (selectedYear, selectedMake, selectedModel) => {
         if (!selectedYear && !selectedMake && !selectedModel) {
-            setHeaderMainTitle('Choose Make');
-            setHeaderSubtitle(selectedYear);
+            setHeaderMainTitle('Choose Year');
+            setHeaderSubtitle(' ');
         } else if (selectedYear && !selectedMake && !selectedModel) {
             setHeaderMainTitle('Choose Make');
             setHeaderSubtitle(selectedYear);
@@ -74,13 +97,19 @@ export const AppContextProvider = ({ children }) => {
             setHeaderSubtitle(`${selectedYear} ${selectedMake}`);
         } else if (selectedYear && selectedMake && selectedModel) {
             setHeaderSubtitle('fin');
+        } else {
+            setHeaderMainTitle('Choose Year');
+            setHeaderSubtitle(' ');
         }
     };
 
     return (
         <AppContext.Provider
             value={{
-                fetchApiData,
+                fetchApiYears,
+                fetchApiMakes,
+                fetchApiModels,
+                fetchApiVehicle,
                 apiYears,
                 setApiYears,
                 apiMakes,
@@ -105,6 +134,8 @@ export const AppContextProvider = ({ children }) => {
                 setHeaderSubtitle,
                 updateTextHeader,
                 handleSelectListItem,
+                apiItem,
+                setApiItem,
             }}
         >
             {children}

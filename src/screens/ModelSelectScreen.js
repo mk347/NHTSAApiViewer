@@ -9,7 +9,7 @@ const ModelSelectScreen = () => {
     const [error, setError] = useState(null);
 
     const {
-        fetchApiData,
+        fetchApiModels,
         selectedYear,
         selectedMake,
         apiModel,
@@ -23,7 +23,7 @@ const ModelSelectScreen = () => {
             setIsLoading(true);
 
             try {
-                const apiModel = await fetchApiData(selectedYear, selectedMake);
+                const apiModel = await fetchApiModels();
                 setApiModel(apiModel);
             } catch (error) {
                 setError(error.message);

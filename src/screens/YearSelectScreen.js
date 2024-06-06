@@ -6,14 +6,14 @@ import ListItem from '../components/ListItem.js';
 const YearSelectScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { fetchApiData, apiYears, setApiYears } = useContext(AppContext);
+    const { fetchApiYears, apiYears, setApiYears } = useContext(AppContext);
 
     useEffect(() => {
         const fetchYears = async () => {
             setIsLoading(true);
 
             try {
-                const apiYears = await fetchApiData();
+                const apiYears = await fetchApiYears();
                 setApiYears(apiYears);
             } catch (error) {
                 setError(error.message);
