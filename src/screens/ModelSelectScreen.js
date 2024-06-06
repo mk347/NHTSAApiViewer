@@ -1,42 +1,29 @@
 import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../context/AppContext';
 import VehicleModal from '../components/VehicleModal';
 import ListItem from '../components/ListItem';
+import { useQuery } from '@tanstack/react-query';
 
 const ModelSelectScreen = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-
     const {
-        fetchApiData,
+        fetchApiModels,
         selectedYear,
         selectedMake,
-        apiModel,
-        setApiModel,
         modalVisible,
         setModalVisible,
     } = useContext(AppContext);
 
-    useEffect(() => {
-        const fetchModels = async () => {
-            setIsLoading(true);
-
-            try {
-                const apiModel = await fetchApiData(selectedYear, selectedMake);
-                setApiModel(apiModel);
-            } catch (error) {
-                setError(error.message);
-            }
-            setIsLoading(false);
-        };
-        fetchModels();
-    }, [selectedMake, selectedYear]);
-
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['modelsFromQuery', selectedYear, selectedMake],
+        queryFn: fetchApiModels,
+        // queryFn: () => fetchApiModels(selectedYear, selectedMake),
+    })
+    
     if (isLoading) {
         return <ActivityIndicator color='#d97e1e' />;
     }
-
+    
     if (error) {
         return <Text>{error.message}</Text>;
     }
@@ -44,7 +31,7 @@ const ModelSelectScreen = () => {
     return (
         <View style={styles.container}>
             <FlatList
-                data={apiModel}
+                data={data}
                 renderItem={({ item }) => (
                     <ListItem
                         item={item.Model}

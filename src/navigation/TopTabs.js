@@ -10,7 +10,7 @@ import AppContext from '../context/AppContext';
 const Tab = createMaterialTopTabNavigator();
 
 function TopTabs() {
-    const { selectedYear, selectedModel, selectedMake } = useContext(AppContext);
+    const { selectedYear, selectedModel, selectedMake, updateTextHeader } = useContext(AppContext);
 
     return (
         <>
@@ -31,6 +31,7 @@ function TopTabs() {
                             if (!selectedYear) {
                                 e.preventDefault();
                             }
+                            updateTextHeader()
                         },
                     }}
                     options={{
@@ -46,6 +47,7 @@ function TopTabs() {
                             if (!selectedMake) {
                                 e.preventDefault();
                             }
+                            updateTextHeader(selectedYear)
                         },
                     }}
                     options={{
@@ -61,6 +63,7 @@ function TopTabs() {
                             if (!selectedModel) {
                                 e.preventDefault();
                             }
+                            updateTextHeader(selectedYear, selectedMake)
                         },
                     }}
                     options={{

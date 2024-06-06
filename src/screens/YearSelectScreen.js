@@ -1,27 +1,16 @@
 import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../context/AppContext.js';
 import ListItem from '../components/ListItem.js';
+import { useQuery } from '@tanstack/react-query';
 
 const YearSelectScreen = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const { fetchApiData, apiYears, setApiYears } = useContext(AppContext);
+    const { fetchApiYears } = useContext(AppContext);
 
-    useEffect(() => {
-        const fetchYears = async () => {
-            setIsLoading(true);
-
-            try {
-                const apiYears = await fetchApiData();
-                setApiYears(apiYears);
-            } catch (error) {
-                setError(error.message);
-            }
-            setIsLoading(false);
-        };
-        fetchYears();
-    }, []);
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['yearsFromQuery'],
+        queryFn: fetchApiYears,
+    });
 
     if (isLoading) {
         return <ActivityIndicator color='#d97e1e' />;
@@ -34,7 +23,7 @@ const YearSelectScreen = () => {
     return (
         <View style={styles.container}>
             <FlatList
-                data={apiYears}
+                data={data}
                 renderItem={({ item }) => (
                     <>
                         {item.ModelYear >= 1995 && item.ModelYear <= 2024 && (

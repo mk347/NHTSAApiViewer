@@ -1,27 +1,17 @@
 import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../context/AppContext';
 import ListItem from '../components/ListItem';
+import { useQuery } from '@tanstack/react-query';
 
 const MakeSelectScreen = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const { fetchApiData, apiMakes, setApiMakes, selectedYear } = useContext(AppContext);
+    const { fetchApiMakes, apiMakes, setApiMakes, selectedYear } = useContext(AppContext);
 
-    useEffect(() => {
-        const fetchMakes = async () => {
-            setIsLoading(true);
-
-            try {
-                const apiMakes = await fetchApiData(selectedYear);
-                setApiMakes(apiMakes);
-            } catch (error) {
-                setError(error.message);
-            }
-            setIsLoading(false);
-        };
-        fetchMakes();
-    }, [selectedYear]);
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['makesFromQuery', selectedYear],
+        queryFn: fetchApiMakes,
+        // queryFn: () => fetchApiMakes(),
+    });
 
     if (isLoading) {
         return <ActivityIndicator color='#d97e1e' />;
@@ -34,14 +24,8 @@ const MakeSelectScreen = () => {
     return (
         <View style={styles.container}>
             <FlatList
-                data={apiMakes}
-                renderItem={({ item }) => (
-                    <ListItem
-                        item={item.Make}
-                        curPage='Make'
-                        nextPage='Model'
-                    />
-                )}
+                data={data}
+                renderItem={({ item }) => <ListItem item={item.Make} curPage='Make' nextPage='Model' />}
             />
         </View>
     );
