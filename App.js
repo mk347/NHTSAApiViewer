@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppContextProvider } from './src/context/AppContext';
 import TopTabs from './src/navigation/TopTabs';
+// import DemoScreen from './src/screens/DemoScreen';
 
 export default function App() {
     return (

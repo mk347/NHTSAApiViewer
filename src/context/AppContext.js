@@ -19,57 +19,6 @@ export const AppContextProvider = ({ children }) => {
 
     const navigation = useNavigation();
 
-    const baseUrl = 'https://api.nhtsa.gov/SafetyRatings/'; 
-    const formatUrl = '?format=json'; 
-
-    const fetchApiYears = async () => { 
-        const url = `${baseUrl}${formatUrl}`
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-
-        const json = await res.json();
-        return json.Results;
-    };
-
-    const fetchApiMakes = async () => { 
-        const url = `${baseUrl}/modelyear/${selectedYear}/${formatUrl}`;
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-
-        const json = await res.json();
-        return json.Results;
-    };
-
-    const fetchApiModels = async () => { 
-        const url = `${baseUrl}/modelyear/${selectedYear}/make/${selectedMake}/${formatUrl}`;
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-
-        const json = await res.json();
-        return json.Results;
-    };
-
-    const fetchApiVehicle = async () => { 
-        const url = `${baseUrl}/modelyear/${selectedYear}/make/${selectedMake}/model/${selectedModel}/${formatUrl}`;
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-
-        const json = await res.json();
-        return json.Results;
-    };
-
     const handleSelectListItem = (item, curPage, nextPage) => {
         if (curPage === 'Year') {
             navigation.navigate(nextPage);
@@ -106,10 +55,6 @@ export const AppContextProvider = ({ children }) => {
     return (
         <AppContext.Provider
             value={{
-                fetchApiYears,
-                fetchApiMakes,
-                fetchApiModels,
-                fetchApiVehicle,
                 apiYears,
                 setApiYears,
                 apiMakes,

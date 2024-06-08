@@ -1,67 +1,48 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, Pressable, StyleSheet, ActivityIndicator, FlatList, Alert } from 'react-native';
 import AppContext from '../context/AppContext';
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
-import ListItem from './ListItem';
+import useFetch from '../hooks/useFetch';
 
 const VehicleModal = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { selectedYear, selectedMake, selectedModel, modalVisible, setModalVisible } = useContext(AppContext);
 
-    const {
-        fetchApiVehicle,
-        selectedYear,
-        selectedMake,
-        selectedModel,
-        apiVehicle,
-        setApiVehicle,
-        modalVisible,
-        setModalVisible,
-    } = useContext(AppContext);
-
-    useEffect(() => {
-        const fetchVehicle = async () => {
-            setIsLoading(true);
-
-            try {
-                const apiVehicle = await fetchApiVehicle();
-                setApiVehicle(apiVehicle);
-            } catch (error) {
-                setError(error.message);
-            }
-            setIsLoading(false);
-        };
-        fetchVehicle();
-    }, [selectedYear, selectedMake, selectedModel]);
-
-    if (isLoading) {
-        return <ActivityIndicator color='#d97e1e' />;
-    }
+    const { loading, error, value } = useFetch(
+        `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}/make/${selectedMake}/model/${selectedModel}/?format=json`,
+        {},
+        [selectedYear, selectedMake, selectedModel]
+    );
 
     const handleCloseModal = () => {
         setModalVisible(false);
     };
 
+    if (error) {
+        return Alert.alert(error.message);
+    }
+
     return (
         <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)}>
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.selectedVehicleHeader}>Selected Vehicle(s)</Text>
-                    <FlatList
-                        data={apiVehicle}
-                        renderItem={({ item }) => (
-                            <View style={styles.vehicleListItem}>
-                                <Text style={styles.selectedVehicleText}>{item.VehicleDescription}</Text>
-                            </View>
-                            // <ListItem item={item.VehicleDescription} />
-                        )}
-                    />
-                    <Pressable style={{ position: 'absolute', top: 15, right: 15 }} onPress={handleCloseModal}>
-                        <AntDesign name='closecircleo' size={24} color='#d97e1e' />
-                    </Pressable>
+            {loading && <ActivityIndicator color='#d97e1e' />}
+            {!loading && (
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.selectedVehicleHeader}>Selected Vehicle(s)</Text>
+                        <FlatList
+                            data={value?.Results}
+                            renderItem={({ item }) => (
+                                <View style={styles.vehicleListItem}>
+                                    <Text style={styles.selectedVehicleText}>{item?.VehicleDescription}</Text>
+                                </View>
+                            )}
+                        />
+                        <Pressable style={{ position: 'absolute', top: 15, right: 15 }} onPress={handleCloseModal}>
+                            <AntDesign name='closecircleo' size={24} color='#d97e1e' />
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
+            )}
         </Modal>
     );
 };

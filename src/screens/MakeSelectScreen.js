@@ -1,48 +1,31 @@
 import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../context/AppContext';
 import ListItem from '../components/ListItem';
+import useFetch from '../hooks/useFetch';
 
 const MakeSelectScreen = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const { fetchApiMakes, apiMakes, setApiMakes, selectedYear } = useContext(AppContext);
+    const { selectedYear } = useContext(AppContext);
 
-    useEffect(() => {
-        const fetchMakes = async () => {
-            setIsLoading(true);
-
-            try {
-                const apiMakes = await fetchApiMakes();
-                setApiMakes(apiMakes);
-            } catch (error) {
-                setError(error.message);
-            }
-            setIsLoading(false);
-        };
-        fetchMakes();
-    }, [selectedYear]);
-
-    if (isLoading) {
-        return <ActivityIndicator color='#d97e1e' />;
-    }
+    const { loading, error, value } = useFetch(
+        `https://api.nhtsa.gov/SafetyRatings/modelyear/${selectedYear}/?format=json`,
+        {},
+        [selectedYear]
+    );
 
     if (error) {
-        return <Text>{error.message}</Text>;
+        return Alert.alert(error.message);
     }
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={apiMakes}
-                renderItem={({ item }) => (
-                    <ListItem
-                        item={item.Make}
-                        curPage='Make'
-                        nextPage='Model'
-                    />
-                )}
-            />
+            {loading && <ActivityIndicator color='#d97e1e' />}
+            {!loading && (
+                <FlatList
+                    data={value?.Results}
+                    renderItem={({ item }) => <ListItem item={item.Make} curPage='Make' nextPage='Model' />}
+                />
+            )}
         </View>
     );
 };
